@@ -13,6 +13,14 @@ String? emailValidation(String? email){
   return null;
 }
 
+String? passwordValidation(String? password){
+  if(password == null || password.isEmpty){
+    return 'Password can not be empty';
+  }
+
+  return null;
+}
+
 String? nameValidation(String? name){
   if(name == null || name.isEmpty){
     return 'Name can not be empty';

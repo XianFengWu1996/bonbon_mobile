@@ -1,4 +1,4 @@
-import 'package:bonbon_mobile/auth/functionality.dart';
+import 'package:argon_buttons_flutter/argon_buttons_flutter.dart';
 import 'package:bonbon_mobile/components/button.dart';
 import 'package:bonbon_mobile/components/input.dart';
 import 'package:bonbon_mobile/model/user_model.dart';
@@ -64,6 +64,7 @@ class _SignUpState extends State<SignUp> {
                       icon: FontAwesomeIcons.lock,
                       label: 'Password',
                       controller: _password,
+                      validator: passwordValidation,
                       suffixIcon: IconButton(
                           onPressed: (){
                             setState(() {
@@ -97,6 +98,7 @@ class _SignUpState extends State<SignUp> {
                       icon: FontAwesomeIcons.lock,
                       label: 'Confirm Password',
                       controller: _confirm,
+                      validator: passwordValidation,
                       isPassword: !showPassword,
                       onChanged: (value){
                         setState(() {});
@@ -106,17 +108,19 @@ class _SignUpState extends State<SignUp> {
                         size: 20,
                         color: _password.text == _confirm.text && _confirm.text.isNotEmpty ? Colors.green : Colors.grey,),
                     ),
-                    ColorButton(onPressed: (){
-                      signUp(
-                          validate: _formKey.currentState!.validate(),
-                          allowToProceed: allowToProceed,
-                          name: _name.text,
-                          email: _email.text,
-                          password: _password.text,
-                          saveUser: _user.saveUser,
-                          context: context,
-                      );
-                    }, label: const Text('Sign Up')),
+                    ColorButtonWithLoading(onPressed: (start, end, state) async {
+                      if(_formKey.currentState!.validate() && allowToProceed){
+                        if(state == ButtonState.Idle){
+                          start();
+                          _user.signUp(
+                              name: _name.text,
+                              email: _email.text,
+                              password: _password.text
+                          );
+                          end();
+                        }
+                      }
+                    }, label: 'Sign Up'),
                     const Divider(thickness: 1.5,),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
